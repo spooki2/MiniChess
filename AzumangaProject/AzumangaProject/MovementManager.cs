@@ -4,16 +4,25 @@ public static class MovementManager
 {
     public static void placePiece(int piece, int pos)
     {
-        Board.Square[pos / 6,pos % 6] = piece; //good transform?
+        Board.Square[pos / 6, pos % 6] = piece; //good transform?
     }
 
-    public static void movePiece(int piece, int from, int to, Boolean bypass = false)
+    public static void movePiece(int piece, int from, int to)
     {
-        if (bypass || MoveEnforcer.isLegal(piece, to, from))
-        {
-            placePiece(piece, to);
-            placePiece(Piece.None, from);
-        }
+        int targetPiece = Board.Square[to / 6, to % 6];
+        if ((Layer1Enforcer.isLegal(piece, to, from)))
+            if (Layer2Enforcer.isLegal(piece, to, from))
+            {
+                {
+                    if (targetPiece != Piece.None)
+                    {
+                        PieceManager.take(piece, targetPiece);
+                    }
+
+                    placePiece(piece, to);
+                    placePiece(Piece.None, from);
+                }
+            }
     }
 
     public static void commandInterpreter(String comm)
@@ -42,7 +51,6 @@ public static class MovementManager
                 }
             }
         }
-
-        movePiece(Board.Square[dest[0] / 6,dest[0] % 6], dest[0], dest[1]);
+        movePiece(Board.Square[dest[0] / 6, dest[0] % 6], dest[0], dest[1]);
     }
 }

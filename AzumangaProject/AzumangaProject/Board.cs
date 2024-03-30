@@ -11,7 +11,7 @@ public static class Board
         {
             for (int j = 0; j < 6; j++)
             {
-                Square[i,j] = 0;
+                Square[i,j] = Piece.None;
             }
         }
     }
