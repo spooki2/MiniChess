@@ -7,50 +7,61 @@ public static class MovementManager
         Board.Square[pos / 6, pos % 6] = piece; //good transform?
     }
 
-    public static void movePiece(int piece, int from, int to)
+    public static Boolean isMegaLegal(int piece, Move move)
     {
-        int targetPiece = Board.Square[to / 6, to % 6];
-        if ((Layer1Enforcer.isLegal(piece, to, from)))
-            if (Layer2Enforcer.isLegal(piece, to, from))
+        if ((Layer1Enforcer.isLegal(piece, move)))
+            if (Layer2Enforcer.isLegal(piece, move))
             {
-                {
-                    if (targetPiece != Piece.None)
-                    {
-                        PieceManager.take(piece, targetPiece);
-                    }
-
-                    placePiece(piece, to);
-                    placePiece(Piece.None, from);
-                }
+                return true;
             }
+
+        return false;
+    }
+
+    public static void movePiece(int piece, Move move)
+    {
+        int from = move.from;
+        int to = move.to;
+        int targetPiece = Board.Square[to / 6, to % 6];
+        if (isMegaLegal(piece, move))
+        {
+            if (targetPiece != Piece.None)
+            {
+                PieceManager.take(piece, targetPiece);
+            }
+
+            placePiece(piece, to);
+            placePiece(Piece.None, from);
+        }
     }
 
     public static void commandInterpreter(String comm)
-    {
-        //proper command should be [CURRENT POS] [NEXT POS]
-        comm = comm.ToLower();
-        comm = comm.Replace(" ", "");
-        string fromSTR = comm.Substring(0, 2);
-        string toSTR = comm.Substring(2);
-        int from = 0;
-        int to = 0;
-        string[] strArr = { fromSTR, toSTR };
-        int[] dest = { from, to }
-            ;
-        for (int i = 0; i <= 1; i++)
         {
-            foreach (char ch in strArr[i])
+            //proper command should be [CURRENT POS] [NEXT POS]
+            comm = comm.ToLower();
+            comm = comm.Replace(" ", "");
+            string fromSTR = comm.Substring(0, 2);
+            string toSTR = comm.Substring(2);
+            int from = 0;
+            int to = 0;
+            string[] strArr = { fromSTR, toSTR };
+            int[] dest = { from, to }
+                ;
+            for (int i = 0; i <= 1; i++)
             {
-                if ('a' <= ch && ch <= 'f')
+                foreach (char ch in strArr[i])
                 {
-                    dest[i] += (ch - 'a');
-                }
-                else
-                {
-                    dest[i] += (6 - (ch - '0')) * 6;
+                    if ('a' <= ch && ch <= 'f')
+                    {
+                        dest[i] += (ch - 'a');
+                    }
+                    else
+                    {
+                        dest[i] += (6 - (ch - '0')) * 6;
+                    }
                 }
             }
+
+            movePiece(Board.Square[dest[0] / 6, dest[0] % 6], new Move(dest[0], dest[1]));
         }
-        movePiece(Board.Square[dest[0] / 6, dest[0] % 6], dest[0], dest[1]);
     }
-}

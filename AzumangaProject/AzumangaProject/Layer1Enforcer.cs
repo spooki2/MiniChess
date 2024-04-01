@@ -33,69 +33,87 @@ public static class Layer1Enforcer
         ruleMoves[Piece.King] = new int[] { Up, Down, Left, Right, diagRU, diagRD, diagLU, diagLD };
     }
 
-    public static Boolean isLegal(int piece, int from, int to)
+    //try
+    public static Boolean isLegal(int piece, Move move)
     {
-        int color = piece & 0b11000;
-        piece = piece & 0b111;
-        int rowDelta = Math.Abs((to / 6) - (from / 6));
-        int colDelta = Math.Abs((to % 6) - (from % 6));
-        int delta = Math.Abs(to - from);
-
-        foreach (int possibleMove in ruleMoves[piece])
+        try
         {
-            if (piece == Piece.Bishop)
+            int from = move.from;
+            int to = move.to;
+            int color = piece & 0b11000;
+            piece = piece & 0b111;
+            int rowDelta = Math.Abs((to / 6) - (from / 6));
+            int colDelta = Math.Abs((to % 6) - (from % 6));
+            int delta = Math.Abs(to - from);
+
+            if (move.from == move.to)
             {
-                if (rowDelta == colDelta)
+                return false;
+            }
+            foreach (int possibleMove in ruleMoves[piece])
+            {
+                if (piece == Piece.Bishop)
+                {
+                    if (rowDelta == colDelta)
+                    {
+                        return true;
+                    }
+                }
+                else if (piece == Piece.Rook)
+                {
+                    if (rowDelta == 0 || colDelta == 0)
+                    {
+                        return true;
+                    }
+                }
+                else if (piece == Piece.Pawn)
+                {
+                    if (possibleMove == delta)
+                    {
+                        if (possibleMove == Up || possibleMove == Down)
+                        {
+                            if (color == Piece.Black && (from > to))
+                            {
+                                return true;
+                            }
+
+                            if (color == Piece.White && (from < to))
+                            {
+                                return true;
+                            }
+                        }
+                        //flipped vals, should be to. why works?
+                        else if (Board.Square[from / 6, from % 6] != Piece.None)
+                        {
+                            if (color == Piece.Black && (from > to))
+                            {
+                                return true;
+                            }
+
+                            if (color == Piece.White && (from < to))
+                            {
+                                return true;
+                            }
+
+                            //return false;
+                            return true; //all pawn moves are legal for now
+                        }
+                    }
+                }
+                else if (possibleMove == delta)
                 {
                     return true;
                 }
             }
-            else if (piece == Piece.Rook)
-            {
-                if (rowDelta == 0 || colDelta == 0)
-                {
-                    return true;
-                }
-            }
-            else if (piece == Piece.Pawn)
-            {
-                if (possibleMove == delta)
-                {
-                    if (possibleMove == Up || possibleMove == Down)
-                    {
-                        if (color == Piece.Black && (from > to))
-                        {
-                            return true;
-                        }
 
-                        if (color == Piece.White && (from < to))
-                        {
-                            return true;
-                        }
-                    }
-                    //flipped vals, should be to. why works?
-                    else if (Board.Square[from / 6, from % 6] != Piece.None)
-                    {
-                        if (color == Piece.Black && (from > to))
-                        {
-                            return true;
-                        }
-
-                        if (color == Piece.White && (from < to))
-                        {
-                            return true;
-                        }
-
-                        return false;
-                    }
-                }
-            }
-            else if (possibleMove == delta)
-            {
-                return true;
-            }
+            return false;
         }
-
-        return false;
+        catch (Exception e)
+        {
+            //Console.WriteLine("LAYER 1 ENFORCER EXCEPTION !!!");
+            //Console.WriteLine(e);
+            return false;
+        }
     }
 }
+

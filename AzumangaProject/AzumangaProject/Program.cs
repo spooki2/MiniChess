@@ -2,6 +2,18 @@
 using AzumangaProject;
 using System.Text;
 
+// ! !! !! !  ! !! ! ! ! ! !! ! ! !
+
+// REWORK LEGALITY SYSTEM, IT CAN CAUSE INVISIBLE BUGS IN BOT
+// WORK WITH GCODE TO GET IT RIGHT
+
+
+
+
+
+// ! !! !! !  ! !! ! ! ! ! !! ! ! !
+
+
 
 Console.OutputEncoding = Encoding.UTF8;
 
@@ -93,12 +105,19 @@ foreach (int piece in Piece.pieceName.Keys)
 
 initGame();
 //Board.clearBoard();
-
+int moves = 100;
 while (true)
 {
-    updateUI();
-    string command = "";
-    Console.Write("Enter move: ");
-    command = Console.ReadLine();
-    MovementManager.commandInterpreter(command);
+    if (moves != 0)
+    {
+        Bot.updateDict();
+        updateUI();
+        Bot.allLegalMoves(moves);
+        //string command = "";
+        //Console.Write("Enter move: ");
+        //command = Console.ReadLine();
+        //MovementManager.commandInterpreter(command);
+        Bot.pickLegalMove(moves);
+        moves--;
+    }
 }
