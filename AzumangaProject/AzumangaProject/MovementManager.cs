@@ -9,11 +9,13 @@ public static class MovementManager
 
     public static Boolean isMegaLegal(int piece, Move move)
     {
-        if ((Layer1Enforcer.isLegal(piece, move)))
-            if (Layer2Enforcer.isLegal(piece, move))
+        if (Magi_1_Melchior.isLegal(piece, move))
+        {
+            if (Magi_2_Balthasar.isLegal(piece, move))
             {
                 return true;
             }
+        }
 
         return false;
     }
@@ -35,7 +37,10 @@ public static class MovementManager
         }
     }
 
-    public static void commandInterpreter(String comm)
+    public static Boolean commandInterpreter(String comm)
+    {
+        Boolean isValid = false;
+        try
         {
             //proper command should be [CURRENT POS] [NEXT POS]
             comm = comm.ToLower();
@@ -62,6 +67,13 @@ public static class MovementManager
                 }
             }
 
+            isValid = isMegaLegal(Board.Square[dest[0] / 6, dest[0] % 6], new Move(dest[0], dest[1]));
             movePiece(Board.Square[dest[0] / 6, dest[0] % 6], new Move(dest[0], dest[1]));
         }
+        catch (Exception e)
+        {
+            Console.WriteLine("ILLEGAL MOVE");
+        }
+        return isValid;
     }
+}

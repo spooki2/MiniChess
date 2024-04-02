@@ -21,7 +21,29 @@ public static class Bot
         }
     }
 
-    public static void allLegalMoves(int moves)
+    public static int evaluate(Move move)
+    {
+        return PointSystem.pieceValue[(Board.get1D(move.to)&0b111)];
+    }
+
+    public static Move bestChoice(int piece)
+    {
+        List<Move> colorLegalMoves = blackLegalMoves;
+        int highestScore = 0;
+        Move bestMove = colorLegalMoves[0]; //init value
+        foreach (Move move in colorLegalMoves)
+        {
+            int moveScore = evaluate(move);
+            if (moveScore > highestScore)
+            {
+                highestScore = moveScore;
+                bestMove = move;
+            }
+        }
+        return bestMove;
+    }
+
+    public static void allLegalMoves()
     {
         whiteLegalMoves.Clear();
         blackLegalMoves.Clear();
@@ -35,11 +57,11 @@ public static class Bot
                 Move move = new Move(position, i);
                 if (MovementManager.isMegaLegal(piece, move))
                 {
-                    if (moves % 2 == 0 && (piece & 0b11000) == Piece.White)
+                    if ((piece & 0b11000) == Piece.White)
                     {
                         whiteLegalMoves.Add(move);
                     }
-                    else if (moves % 2 == 1 && (piece & 0b11000) == Piece.Black)
+                    else if ((piece & 0b11000) == Piece.Black)
                     {
                         blackLegalMoves.Add(move);
                     }
@@ -48,14 +70,23 @@ public static class Bot
         }
     }
 
-    public static void pickLegalMove(int moves)
+    public static void pickLegalMove()
     {
-        List<Move> currMoves = moves % 2 == 0 ? whiteLegalMoves : blackLegalMoves;
-        if (currMoves.Count > 0)
+        //List<Move> currMoves = moves % 2 == 0 ? whiteLegalMoves : blackLegalMoves;
+        List<Move> colorLegalMoves = blackLegalMoves;
+        Dictionary<int,Move> eval_Move = new Dictionary<int,Move>();
+        foreach (Move move in colorLegalMoves)
         {
-            int index = rand.Next(currMoves.Count);
-            Move move = currMoves[index];
-            MovementManager.movePiece(Board.Square[move.from / 6, move.from % 6], move);
+            eval_Move[evaluate(move)] = move;
+        }
+        Move bestestMove = eval_Move[eval_Move.Keys.Max()];
+        if (colorLegalMoves.Count > 0)
+        {
+            MovementManager.movePiece(Board.get1D(bestestMove.from), bestestMove);
+        }
+        else
+        {
+            Console.WriteLine("LOST?? ERROR CASE");
         }
     }
 }

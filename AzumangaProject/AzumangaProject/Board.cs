@@ -12,6 +12,10 @@ public struct Move
 
 public static class Board
 {
+    public static int get1D(int square)
+    {
+        return Board.Square[square / 6, square % 6];
+    }
     public static int[] to2D(int pos)
     {
         return [pos / 6, pos % 6];

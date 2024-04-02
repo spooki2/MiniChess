@@ -2,17 +2,15 @@
 using AzumangaProject;
 using System.Text;
 
-// ! !! !! !  ! !! ! ! ! ! !! ! ! !
+// ! ! ! ! ! !! ! ! !! !
 
-// REWORK LEGALITY SYSTEM, IT CAN CAUSE INVISIBLE BUGS IN BOT
-// WORK WITH GCODE TO GET IT RIGHT
+//make methods bot by color
 
+//new bot controller class with recursive functions
 
+//add board saveCheckPoint loadCheckPoint (optional)
 
-
-
-// ! !! !! !  ! !! ! ! ! ! !! ! ! !
-
+// ! ! ! ! ! !! ! ! !! !
 
 
 Console.OutputEncoding = Encoding.UTF8;
@@ -79,45 +77,24 @@ void updateUI()
 }
 
 
-//test all possible positions
-/*
-foreach (int piece in Piece.pieceName.Keys)
-{
-    if (piece != Piece.None)
-    {
-        MovementManager.placePiece(piece | Piece.White, (Offsets.Down * 2) + 2);
-
-        for (int i = 0; i < 36; i++)
-        {
-            MovementManager.movePiece(piece | Piece.Black, (Offsets.Down * 2) + 2, i);
-        }
-
-        MovementManager.placePiece(piece | Piece.White, (Offsets.Down * 2) + 2);
-    }
-
-    updateUI();
-    Board.clearBoard();
-}
-
-
-
-*/
-
 initGame();
-//Board.clearBoard();
 int moves = 100;
 while (true)
 {
     if (moves != 0)
     {
-        Bot.updateDict();
         updateUI();
-        Bot.allLegalMoves(moves);
-        //string command = "";
-        //Console.Write("Enter move: ");
-        //command = Console.ReadLine();
-        //MovementManager.commandInterpreter(command);
-        Bot.pickLegalMove(moves);
-        moves--;
+        string command = "";
+        Console.Write("Enter move: ");
+        command = Console.ReadLine();
+        Boolean validMove = MovementManager.commandInterpreter(command);
+        if (validMove)
+        {
+            Bot.updateDict();
+            Bot.allLegalMoves();
+            updateUI();
+            Bot.pickLegalMove();
+            moves--;
+        }
     }
 }
