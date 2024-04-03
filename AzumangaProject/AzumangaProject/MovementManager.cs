@@ -20,8 +20,9 @@ public static class MovementManager
         return false;
     }
 
-    public static void movePiece(int piece, Move move)
+    public static void movePiece(Move move)
     {
+        int piece = Board.get1D(move.from);
         int from = move.from;
         int to = move.to;
         int targetPiece = Board.Square[to / 6, to % 6];
@@ -68,7 +69,7 @@ public static class MovementManager
             }
 
             isValid = isMegaLegal(Board.Square[dest[0] / 6, dest[0] % 6], new Move(dest[0], dest[1]));
-            movePiece(Board.Square[dest[0] / 6, dest[0] % 6], new Move(dest[0], dest[1]));
+            movePiece(new Move(dest[0], dest[1]));
         }
         catch (Exception e)
         {

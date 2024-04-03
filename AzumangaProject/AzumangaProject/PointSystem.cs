@@ -14,6 +14,6 @@ public static class PointSystem
         pieceValue[Piece.Bishop] = 3;
         pieceValue[Piece.Knight] = 3;
         pieceValue[Piece.Rook] = 5;
-        pieceValue[Piece.King] = int.MaxValue;
+        pieceValue[Piece.King] = 100;
     }
 }

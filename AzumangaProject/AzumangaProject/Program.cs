@@ -10,6 +10,8 @@ using System.Text;
 
 //add board saveCheckPoint loadCheckPoint (optional)
 
+//remove all restrictions from magi and check if takes king
+
 // ! ! ! ! ! !! ! ! !! !
 
 
@@ -90,10 +92,7 @@ while (true)
         Boolean validMove = MovementManager.commandInterpreter(command);
         if (validMove)
         {
-            Bot.updateDict();
-            Bot.allLegalMoves();
-            updateUI();
-            Bot.pickLegalMove();
+            BotController.play();
             moves--;
         }
     }
