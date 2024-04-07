@@ -5,6 +5,15 @@ public static class PieceManager
     public static List<int> blackInv = new List<int>();
     public static List<int> whiteInv = new List<int>();
 
+    public static int colorOnly(int piece)
+    {
+        return piece & 0b11000;
+    }
+    public static int pieceOnly(int piece)
+    {
+        return piece & 0b111;
+    }
+
     public static void take(int taker, int taken)
     {
         taken = taken & 0b111;

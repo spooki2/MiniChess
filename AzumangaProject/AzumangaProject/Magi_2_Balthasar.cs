@@ -22,19 +22,19 @@ public class Magi_2_Balthasar
     }
 
 
-    public static Boolean pawnLegalMove(int piece, Move move)
+    public static Boolean pawnLegalMove(int piece, Move move,Board board)
     {
         int delta = move.to - move.from;
         if ((delta == Offsets.Up || delta == Offsets.Down))
         {
-            if (Board.get1D(move.to) == Piece.None)
+            if (board.get1D(move.to) == Piece.None)
             {
                 return true;
             }
         }
         else
         {
-            if (Board.get1D(move.to) != Piece.None)
+            if (board.get1D(move.to) != Piece.None)
             {
                 return true;
             }
@@ -43,7 +43,7 @@ public class Magi_2_Balthasar
         return false;
     }
 
-    public static Boolean bishopRookClearPathCheck(int piece, Move move)
+    public static Boolean bishopRookClearPathCheck(int piece, Move move,Board board)
     {
         int pieceType = piece & 0b111;
         int pieceColor = piece & 0b11000;
@@ -82,7 +82,7 @@ public class Magi_2_Balthasar
 
         foreach (int square in path)
         {
-            if (Board.get1D(square) != Piece.None)
+            if (board.get1D(square) != Piece.None)
             {
                 return false;
             }
@@ -90,25 +90,25 @@ public class Magi_2_Balthasar
 
         return true;
     }
-    public static Boolean isLegal(int piece, Move move)
+    public static Boolean isLegal(int piece, Move move,Board board)
     {
         int pieceType = piece & 0b111;
         int pieceColor = piece & 0b11000;
         try
         {
-            if ((Board.get1D(move.to) & 0b11000) == pieceColor)
+            if ((board.get1D(move.to) & 0b11000) == pieceColor)
             {
                 return false;
             }
 
             if (pieceType == Piece.Pawn)
             {
-                return (pawnLegalDirection(piece, move) & pawnLegalMove(piece, move));
+                return (pawnLegalDirection(piece, move) & pawnLegalMove(piece, move,board));
             }
 
             if (pieceType == Piece.Rook|| pieceType == Piece.Bishop)
             {
-                return bishopRookClearPathCheck(piece, move);
+                return bishopRookClearPathCheck(piece, move,board);
                 //return true;
             }
 

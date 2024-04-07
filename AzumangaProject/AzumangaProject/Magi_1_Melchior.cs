@@ -38,41 +38,29 @@ public static class Magi_1_Melchior
 
         return false;
     }
-    public static bool checkRange(int piece, Move move)
+
+
+    public static bool boardWrapCheck(int piece, Move move) //memory intensive funciton
     {
-        int moveDistance = move.to - move.from;
-        int fromRow = move.from / 6;
-        int toRow = move.to / 6;
-        int fromCol = move.from % 6;
-        int toCol = move.to % 6;
+        /* pseueo
+        delta vector = afterPosVector - beforePosVector
+        if listOfPossibleMovesVector contains delta vector
+        return true
 
-        // row and col delta
-        int rowDiff = toRow - fromRow;
-        int colDiff = toCol - fromCol;
-
-        switch (moveDistance)
+        return false
+        */
+        int[] deltaVector = new int[] {Board.to2D(move.to)[0] - Board.to2D(move.from)[0], Board.to2D(move.to)[1] - Board.to2D(move.from)[1]};
+        foreach (int[] offsetMove in Offsets.OffsetVectorList)
         {
-            case Offsets.Left:
-                if (fromCol == 0) return false; // wrapping from left edge
-                break;
-            case Offsets.Right:
-                if (fromCol == 5) return false; // wrapping from right edge
-                break;
-            case Offsets.diagLU:
-                if (fromCol == 0 || fromRow == 0) return false;
-                break;
-            case Offsets.diagLD:
-                if (fromCol == 0 || fromRow == 5) return false;
-                break;
-            case Offsets.diagRU:
-                if (fromCol == 5 || fromRow == 0) return false;
-                break;
+            if (offsetMove[0] == deltaVector[0] && offsetMove[1] == deltaVector[1])
+            {
+                return true;
+            }
         }
-
-        return true;
+        return false;
     }
 
-    public static Boolean isLegal(int piece, Move move)
+    public static Boolean isLegal(int piece, Move move, Board board)
     {
         try
         {
@@ -84,15 +72,17 @@ public static class Magi_1_Melchior
             {
                 return false;
             }
-            //check that pieces stay in bounds
-            if (checkRange(piece, move) == false)
-            {
-                return false;
-            }
+
 
             if (pieceType == Piece.Rook || pieceType == Piece.Bishop)
             {
                 return rbLegal(piece, move);
+            }
+
+            //check that pieces stay in bounds
+            if (boardWrapCheck(piece, move) == false)
+            {
+                return false;
             }
 
             foreach (int offset in ruleMoves[pieceType])

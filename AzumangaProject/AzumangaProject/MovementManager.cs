@@ -2,43 +2,46 @@
 
 public static class MovementManager
 {
-    public static void placePiece(int piece, int pos)
+    public static void placePiece(int piece, int pos, Board board)
     {
-        Board.Square[pos / 6, pos % 6] = piece; //good transform?
+        board.Square[pos / 6, pos % 6] = piece; //good transform?
     }
 
-    public static Boolean isMegaLegal(int piece, Move move)
+    public static Boolean isMegaLegal(int piece, Move move, Board board,Boolean _ignoreMagi3_=false)
     {
-        if (Magi_1_Melchior.isLegal(piece, move))
+        if (Magi_1_Melchior.isLegal(piece, move, board))
         {
-            if (Magi_2_Balthasar.isLegal(piece, move))
+            if (Magi_2_Balthasar.isLegal(piece, move, board))
             {
-                return true;
+                if (_ignoreMagi3_||Magi_3_Casper.isLegal(piece, move, Board.main))
+                {
+                    return true;
+                }
             }
         }
 
         return false;
     }
 
-    public static void movePiece(Move move)
+    public static void movePiece(Move move, Board board,Boolean _ignoreMagi3_=false)
     {
-        int piece = Board.get1D(move.from);
+        int piece = board.get1D(move.from);
         int from = move.from;
         int to = move.to;
-        int targetPiece = Board.Square[to / 6, to % 6];
-        if (isMegaLegal(piece, move))
+        int targetPiece = board.get1D(to);
+        if (isMegaLegal(piece, move, board,_ignoreMagi3_))
         {
             if (targetPiece != Piece.None)
             {
                 PieceManager.take(piece, targetPiece);
             }
 
-            placePiece(piece, to);
-            placePiece(Piece.None, from);
+            placePiece(piece, to, board);
+            placePiece(Piece.None, from, board);
         }
     }
 
-    public static Boolean commandInterpreter(String comm)
+    public static Boolean commandInterpreter(String comm, Board board)
     {
         Boolean isValid = false;
         try
@@ -68,13 +71,14 @@ public static class MovementManager
                 }
             }
 
-            isValid = isMegaLegal(Board.Square[dest[0] / 6, dest[0] % 6], new Move(dest[0], dest[1]));
-            movePiece(new Move(dest[0], dest[1]));
+            isValid = isMegaLegal(board.Square[dest[0] / 6, dest[0] % 6], new Move(dest[0], dest[1]), board);
+            movePiece(new Move(dest[0], dest[1]), board);
         }
         catch (Exception e)
         {
             Console.WriteLine("ILLEGAL MOVE");
         }
+
         return isValid;
     }
 }

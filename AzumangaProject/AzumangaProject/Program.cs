@@ -2,17 +2,11 @@
 using AzumangaProject;
 using System.Text;
 
-// ! ! ! ! ! !! ! ! !! !
 
-//make methods bot by color
+// ! ! !_ !~ ! ~! ~ ! ~~!~!~!~!~!~!~!~
+//fix edge wrap teleportation
 
-//new bot controller class with recursive functions
-
-//add board saveCheckPoint loadCheckPoint (optional)
-
-//remove all restrictions from magi and check if takes king
-
-// ! ! ! ! ! !! ! ! !! !
+//fix bot controlling my pieces
 
 
 Console.OutputEncoding = Encoding.UTF8;
@@ -43,20 +37,21 @@ static String listToStr(List<int> list)
 }
 
 //start
-static void initGame()
+void initGame()
 {
-    Board.clearBoard();
-    Board.Square[0, 2] = Piece.Black | Piece.Bishop;
-    Board.Square[0, 3] = Piece.Black | Piece.Knight;
-    Board.Square[0, 4] = Piece.Black | Piece.Rook;
-    Board.Square[0, 5] = Piece.Black | Piece.King;
-    Board.Square[1, 5] = Piece.Black | Piece.Pawn;
+    Board.main.clearBoard();
+    //Board.main.Square[0, 2] = Piece.Black | Piece.Bishop;
+    Board.main.Square[0, 3] = Piece.Black | Piece.Knight;
+    Board.main.Square[1, 4] = Piece.Black | Piece.Bishop;
+    Board.main.Square[0, 4] = Piece.Black | Piece.Rook;
+    Board.main.Square[0, 5] = Piece.Black | Piece.King;
+    Board.main.Square[1, 5] = Piece.Black | Piece.Pawn;
 
-    Board.Square[4, 0] = Piece.White | Piece.Pawn;
-    Board.Square[5, 0] = Piece.White | Piece.King;
-    Board.Square[5, 1] = Piece.White | Piece.Rook;
-    Board.Square[5, 2] = Piece.White | Piece.Knight;
-    Board.Square[5, 3] = Piece.White | Piece.Bishop;
+    //Board.main.Square[4, 0] = Piece.White | Piece.Pawn;
+    Board.main.Square[5, 0] = Piece.White | Piece.King;
+    Board.main.Square[5, 1] = Piece.White | Piece.Rook;
+    Board.main.Square[5, 2] = Piece.White | Piece.Knight;
+    Board.main.Square[5, 3] = Piece.White | Piece.Bishop;
 }
 
 void updateUI()
@@ -66,34 +61,42 @@ void updateUI()
     for (int i = 0; i < 6; i++)
     {
         Console.WriteLine(asciiUI.row1);
-        Console.WriteLine(col + String.Format(asciiUI.row2, toShape(Board.Square[i, 0]),
-            toShape(Board.Square[i, 1]), toShape(Board.Square[i, 2]), toShape(Board.Square[i, 3]),
-            toShape(Board.Square[i, 4]), toShape(Board.Square[i, 5])));
+        Console.WriteLine(col + String.Format(asciiUI.row2, toShape(Board.main.Square[i, 0]),
+            toShape(Board.main.Square[i, 1]), toShape(Board.main.Square[i, 2]), toShape(Board.main.Square[i, 3]),
+            toShape(Board.main.Square[i, 4]), toShape(Board.main.Square[i, 5])));
         col--;
     }
 
     Console.WriteLine(asciiUI.row1);
 
-    Console.WriteLine("Black [" + PointSystem.BlackPoints + "]: " + listToStr(PieceManager.blackInv));
-    Console.WriteLine("White [" + PointSystem.WhitePoints + "]: " + listToStr(PieceManager.whiteInv));
+    //Console.WriteLine("Black [" + PointSystem.BlackPoints + "]: " + listToStr(PieceManager.blackInv));
+    //Console.WriteLine("White [" + PointSystem.WhitePoints + "]: " + listToStr(PieceManager.whiteInv));
 }
 
 
 initGame();
-int moves = 100;
+
 while (true)
 {
-    if (moves != 0)
+    Board.updateLast();
+    Board.Current = true;
+    updateUI();
+    string command = "";
+    Console.Write("Enter move: ");
+    command = Console.ReadLine();
+    Boolean validMove = MovementManager.commandInterpreter(command, Board.main);
+    if (validMove)
     {
         updateUI();
-        string command = "";
-        Console.Write("Enter move: ");
-        command = Console.ReadLine();
-        Boolean validMove = MovementManager.commandInterpreter(command);
-        if (validMove)
+        BotController.play(Board.main,3);
+    }
+
+    if (Board.checkMate)
+    {
+        Console.WriteLine("   ____   _   _   _____    ____   _  __\n  / ___| | | | | | ____|  / ___| | |/ /\n | |     | |_| | |  _|   | |     | ' / \n | |___  |  _  | | |___  | |___  | . \\ \n  \\____| |_| |_| |_____|  \\____| |_|\\_\\\n                                       \n  __  __      _      _____   _____     \n |  \\/  |    / \\    |_   _| | ____|    \n | |\\/| |   / _ \\     | |   |  _|      \n | |  | |  / ___ \\    | |   | |___     \n |_|  |_| /_/   \\_\\   |_|   |_____|    \n                                       ");
+        while (true)
         {
-            BotController.play();
-            moves--;
+            
         }
     }
 }
