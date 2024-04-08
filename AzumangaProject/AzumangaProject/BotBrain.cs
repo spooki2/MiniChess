@@ -5,9 +5,9 @@ namespace AzumangaProject
 {
     public static class BotBrain
     {
-        public static Dictionary<Board, MoveScore> allChildBoards(Board board, Boolean botTurn,Boolean _ignoreMagi3_=false)
+        public static Dictionary<Board, int> allChildBoards(Board board, Boolean botTurn, Boolean _ignoreMagi3_ = false)
         {
-            HashSet<Move> bothLegalMoves = BotFunctions.legalMoves(board,_ignoreMagi3_);
+            HashSet<Move> bothLegalMoves = BotFunctions.legalMoves(board, _ignoreMagi3_);
             HashSet<Move> legalMoves = new HashSet<Move>();
             foreach (Move move in bothLegalMoves)
             {
@@ -28,25 +28,36 @@ namespace AzumangaProject
             }
 
 
-            Dictionary<Board, MoveScore> boardScores = new Dictionary<Board, MoveScore>();
+            Dictionary<Board, int> boardScores = new Dictionary<Board, int>();
             //make moves in child board
             foreach (Move move in legalMoves)
             {
                 //copy board
                 Board childBoard = new Board(board);
                 MovementManager.movePiece(move, childBoard);
-                boardScores[childBoard] = new MoveScore(move, BotFunctions.evaluate(childBoard));
+                boardScores[childBoard] = BotFunctions.evaluate(childBoard);
             }
+
+
+            //add respawn boards
+            List<respawnMove> legalRespawns = BotFunctions.legalRespawns(board);
+            foreach (respawnMove move in legalRespawns)
+            {
+                //copy board
+                Board childBoard = new Board(board);
+                MovementManager.placePiece(move.piece, move.to, childBoard);
+                boardScores[childBoard] =  BotFunctions.evaluate(childBoard);
+            }
+
 
             return boardScores;
         }
 
         //minimax
 
-        public static BoardScore minimax(Board currBoard, int depth, Boolean botTurn,Boolean _ignoreMagi3_=false)
+        public static BoardScore minimax(Board currBoard, int depth, Boolean botTurn, Boolean _ignoreMagi3_ = false)
         {
-
-            Dictionary<Board, MoveScore> childBoardScores = allChildBoards(currBoard, botTurn,_ignoreMagi3_);
+            Dictionary<Board, int> childBoardScores = allChildBoards(currBoard, botTurn, _ignoreMagi3_);
             if (depth == 0)
             {
                 return new BoardScore(currBoard, BotFunctions.evaluate(currBoard));
@@ -58,7 +69,7 @@ namespace AzumangaProject
                 BoardScore maxEval = new BoardScore(currBoard, int.MinValue);
                 foreach (Board childBoard in childBoardScores.Keys)
                 {
-                    BoardScore eval = minimax(childBoard, depth - 1, false,_ignoreMagi3_);
+                    BoardScore eval = minimax(childBoard, depth - 1, false, _ignoreMagi3_);
                     if (eval.value > maxEval.value)
                     {
                         maxEval.value = eval.value;
@@ -73,7 +84,7 @@ namespace AzumangaProject
                 BoardScore minEval = new BoardScore(currBoard, int.MaxValue);
                 foreach (Board childBoard in childBoardScores.Keys)
                 {
-                    BoardScore eval = minimax(childBoard, depth - 1, true,_ignoreMagi3_);
+                    BoardScore eval = minimax(childBoard, depth - 1, true, _ignoreMagi3_);
                     if (eval.value < minEval.value)
                     {
                         minEval.value = eval.value;

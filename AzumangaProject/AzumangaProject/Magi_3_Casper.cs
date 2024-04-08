@@ -11,16 +11,17 @@ public class Magi_3_Casper
         {
             Board.Current = false;
             MovementManager.movePiece(move, board, true);
-            bestBoard = BotBrain.minimax(board, 1, true, true); //IGNORE MAGI 3
+            bestBoard = BotBrain.minimax(board, 1, true); //IGNORE MAGI 3
         }
 
-        Dictionary<int, int> piecesPos = BotFunctions.getPieces(bestBoard.board);
-        if (piecesPos.ContainsKey(Piece.King | Piece.White) && piecesPos.ContainsKey(Piece.King | Piece.Black))
+        List<int> pieces = BotFunctions.getPieces(bestBoard.board);
+        if (pieces.Contains(Piece.King | Piece.White) && pieces.Contains(Piece.King | Piece.Black))
         {
             return true;
         }
         else
         {
+            //Console.WriteLine("no king!");
             Board.main = new Board(Board.lastBoard);
             return false;
         }

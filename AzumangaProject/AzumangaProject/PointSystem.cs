@@ -3,9 +3,6 @@
 public static class PointSystem
 {
     public static Dictionary<int, int> pieceValue = new Dictionary<int, int>();
-    public static int WhitePoints = 0;
-    public static int BlackPoints = 0;
-
 
     static PointSystem()
     {

@@ -32,7 +32,18 @@ static String toShape(int piece)
 static String listToStr(List<int> list)
 {
     String str = "";
-    list.ForEach(p => str += Piece.blackShapes[p] + " ");
+    foreach(int piece in list)
+    {
+        if(PieceManager.colorOnly(piece) == Piece.Black)
+        {
+            str += Piece.blackShapes[PieceManager.pieceOnly(piece)]+" ";
+
+        }
+        else
+        {
+            str += Piece.whiteShapes[PieceManager.pieceOnly(piece)]+" ";
+        }
+    }
     return str;
 }
 
@@ -40,22 +51,50 @@ static String listToStr(List<int> list)
 void initGame()
 {
     Board.main.clearBoard();
-    //Board.main.Square[0, 2] = Piece.Black | Piece.Bishop;
+    Board.main.Square[0, 2] = Piece.Black | Piece.Bishop;
     Board.main.Square[0, 3] = Piece.Black | Piece.Knight;
-    Board.main.Square[1, 4] = Piece.Black | Piece.Bishop;
     Board.main.Square[0, 4] = Piece.Black | Piece.Rook;
     Board.main.Square[0, 5] = Piece.Black | Piece.King;
     Board.main.Square[1, 5] = Piece.Black | Piece.Pawn;
 
-    //Board.main.Square[4, 0] = Piece.White | Piece.Pawn;
+    Board.main.Square[4, 0] = Piece.White | Piece.Pawn;
     Board.main.Square[5, 0] = Piece.White | Piece.King;
     Board.main.Square[5, 1] = Piece.White | Piece.Rook;
     Board.main.Square[5, 2] = Piece.White | Piece.Knight;
     Board.main.Square[5, 3] = Piece.White | Piece.Bishop;
 }
+void initGameTest()
+{
+    Board.main.clearBoard();
+    Board.main.Square[1, 1] = Piece.Black | Piece.Bishop;
+    //Board.main.Square[0, 3] = Piece.Black | Piece.Knight;
+    Board.main.Square[0, 0] = Piece.Black | Piece.Rook;
+    Board.main.Square[0, 4] = Piece.Black | Piece.King;
+    Board.main.Square[1, 5] = Piece.Black | Piece.Pawn;
 
+    Board.main.Square[3, 0] = Piece.White | Piece.Pawn;
+    Board.main.Square[5, 0] = Piece.White | Piece.King;
+    //Board.main.Square[5, 1] = Piece.White | Piece.Rook;
+    Board.main.Square[5, 1] = Piece.White | Piece.Knight;
+    Board.main.Square[3, 1] = Piece.White | Piece.Knight;
+    Board.main.Square[5, 3] = Piece.White | Piece.Bishop;
+}
 void updateUI()
 {
+    List<int> capturedPieces = PieceManager.getInv(Board.main);
+    List<int> blackInv = new List<int>();
+    List<int> whiteInv = new List<int>();
+    foreach (int piece in capturedPieces)
+    {
+        if (PieceManager.colorOnly(piece) == Piece.White)
+        {
+            blackInv.Add(piece);
+        }
+        else
+        {
+            whiteInv.Add(piece);
+        }
+    }
     int col = 6;
     Console.WriteLine("    a   b   c   d   e   f  ");
     for (int i = 0; i < 6; i++)
@@ -69,26 +108,27 @@ void updateUI()
 
     Console.WriteLine(asciiUI.row1);
 
-    //Console.WriteLine("Black [" + PointSystem.BlackPoints + "]: " + listToStr(PieceManager.blackInv));
-    //Console.WriteLine("White [" + PointSystem.WhitePoints + "]: " + listToStr(PieceManager.whiteInv));
+    Console.WriteLine("Black: " + listToStr(whiteInv));
+    Console.WriteLine("White: " + listToStr(blackInv));
 }
 
 
 initGame();
 
-while (true)
+while (true) //magi 3 respawn evaluate respawn
 {
-    Board.updateLast();
+    Board.lastBoard = new Board(Board.main);
     Board.Current = true;
     updateUI();
     string command = "";
     Console.Write("Enter move: ");
     command = Console.ReadLine();
+    //bot checks
     Boolean validMove = MovementManager.commandInterpreter(command, Board.main);
-    if (validMove)
+    if (validMove&&!Board.checkMate)
     {
         updateUI();
-        BotController.play(Board.main,3);
+        BotController.play(Board.main,3); //2 IS LOW!!
     }
 
     if (Board.checkMate)

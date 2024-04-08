@@ -16,6 +16,9 @@ public static class Piece
      left side will be white or black (01 or 10)
      and right side will be the piece
     */
+
+    public static List<int> allPieces = new List<int> { Pawn, Bishop, Knight, Rook, King };
+    public static Dictionary<String, int> shortNames = new Dictionary<string, int>();
     public static Dictionary<int, String> pieceName = new Dictionary<int, string>();
     public static Dictionary<int, String> whiteShapes = new Dictionary<int, string>();
     public static Dictionary<int, String> blackShapes = new Dictionary<int, string>();
@@ -42,5 +45,12 @@ public static class Piece
         blackShapes[Knight] = "\u265e";
         blackShapes[Rook] = "\u265c";
         blackShapes[King] = "\u265a";
+
+        shortNames["pa"] = Pawn;
+        shortNames["bi"] = Bishop;
+        shortNames["kn"] = Knight;
+        shortNames["ro"] = Rook;
+        shortNames["ki"] = King;
+
     }
 }

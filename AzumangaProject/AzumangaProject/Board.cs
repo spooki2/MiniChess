@@ -32,6 +32,17 @@ public struct MoveScore
     }
 }
 
+public struct respawnMove
+{
+    public int piece;
+    public int to;
+    public respawnMove(int piece, int to)
+    {
+        this.piece = piece;
+        this.to = to;
+    }
+}
+
 public class Board
 {
     public static Boolean Current;
@@ -58,10 +69,7 @@ public class Board
     }
 
     //update lastBoard
-    public static void updateLast()
-    {
-        lastBoard = new Board(main);
-    }
+
     public int get1D(int square)
     {
         return Square[square / 6, square % 6];

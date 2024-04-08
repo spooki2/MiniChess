@@ -7,9 +7,7 @@ public static class BotController
         BoardScore bestBoard = BotBrain.minimax(board, depth, true);
 
 
-        //make main board into bestboard
-        Console.WriteLine("[debug] bot predicted profit: "+ bestBoard.value);
-        if (bestBoard.value >= 100)
+        if (BotFunctions.evaluate(board) >= 50)
         {
             Board.checkMate = true;
             //GAME WON!!!!! 07/04/2024 3:14
